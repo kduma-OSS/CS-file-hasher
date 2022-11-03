@@ -79,8 +79,8 @@ jobs:
     - name: Publish for osx-x64
       run: >
         dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
-#        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/ \
-#        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
+        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/ \
+        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
 
     - name: Remove .pdb files
       run: rm output/*/*.pdb
@@ -88,8 +88,58 @@ jobs:
 #    - name: Zip published files
 #      run: for i in output/*/; do zip --junk-paths --recurse-paths --move --test "${i%/}.zip" "$i"; done
 
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for win-x86
+#      with:
+#        name: win-x86
+#        path: output/win-x86/
+#        retention-days: 7
+#
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for win-x64
+#      with:
+#        name: win-x64
+#        path: output/win-x64/
+#        retention-days: 7
+#
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for win-arm
+#      with:
+#        name: win-arm
+#        path: output/win-arm/
+#        retention-days: 7
+#
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for win-arm64
+#      with:
+#        name: win-arm64
+#        path: output/win-arm64/
+#        retention-days: 7
+#
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for linux-x64
+#      with:
+#        name: linux-x64
+#        path: output/linux-x64/
+#        retention-days: 7
+#
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for linux-arm
+#      with:
+#        name: linux-arm
+#        path: output/linux-arm/
+#        retention-days: 7
+#
+#    - uses: actions/upload-artifact@v3
+#      name: Upload artifacts for linux-arm64
+#      with:
+#        name: linux-arm64
+#        path: output/linux-arm64/
+#        retention-days: 7
+
     - uses: actions/upload-artifact@v3
+      name: Upload artifacts for osx-x64
       with:
         name: osx-x64
         path: output/osx-x64/
-        retention-days: 30
+        retention-days: 7
