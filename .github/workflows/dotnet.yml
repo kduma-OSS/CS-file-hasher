@@ -97,6 +97,7 @@ jobs:
         dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
 
     - name: Remove .pdb files
+      if: startsWith(github.ref, 'refs/tags/')
       run: rm output/*/*.pdb
       
     - name: Publish for win-x86-full
