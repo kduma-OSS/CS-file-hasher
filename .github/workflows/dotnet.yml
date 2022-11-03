@@ -39,13 +39,13 @@ jobs:
 #        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime win-x86 --self-contained true --output output/win-x86/ \
 #        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime win-x86 --self-contained true --output output/win-x86/ \
 #        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime win-x86 --self-contained true --output output/win-x86/
-
-    - name: Publish for win-x64
-      run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime win-x64 --self-contained true --output output/win-x64/ \
-        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime win-x64 --self-contained true --output output/win-x64/ \
-        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime win-x64 --self-contained true --output output/win-x64/
-    
+#
+#    - name: Publish for win-x64
+#      run: >
+#        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime win-x64 --self-contained true --output output/win-x64/ \
+#        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime win-x64 --self-contained true --output output/win-x64/ \
+#        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime win-x64 --self-contained true --output output/win-x64/
+#    
 #    - name: Publish for win-arm
 #      run: >
 #        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime win-arm --self-contained true --output output/win-arm/ \
@@ -57,13 +57,13 @@ jobs:
 #        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime win-arm64 --self-contained true --output output/win-arm64/ \
 #        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime win-arm64 --self-contained true --output output/win-arm64/ \
 #        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime win-arm64 --self-contained true --output output/win-arm64/
-    
-    - name: Publish for linux-x64
-      run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime linux-x64 --self-contained true --output output/linux-x64/ \
-        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime linux-x64 --self-contained true --output output/linux-x64/ \
-        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime linux-x64 --self-contained true --output output/linux-x64/
-    
+#    
+#    - name: Publish for linux-x64
+#      run: >
+#        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime linux-x64 --self-contained true --output output/linux-x64/ \
+#        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime linux-x64 --self-contained true --output output/linux-x64/ \
+#        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime linux-x64 --self-contained true --output output/linux-x64/
+#    
 #    - name: Publish for linux-arm
 #      run: >
 #        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime linux-arm --self-contained true --output output/linux-arm/ \
@@ -78,17 +78,18 @@ jobs:
     
     - name: Publish for osx-x64
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/ \
-        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/ \
-        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
+#        && dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/ \
+#        && dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
 
     - name: Remove .pdb files
       run: rm output/*/*.pdb
       
-    - name: Zip published files
-      run: for i in output/*/; do zip --junk-paths --recurse-paths --move --test "${i%/}.zip" "$i"; done
+#    - name: Zip published files
+#      run: for i in output/*/; do zip --junk-paths --recurse-paths --move --test "${i%/}.zip" "$i"; done
 
     - uses: actions/upload-artifact@v3
       with:
-        name: build-artifacts
-        path: output/*.zip
+        name: osx-x64
+        path: output/osx-x64/
+        retention-days: 30
