@@ -96,6 +96,14 @@ jobs:
         dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/;
         dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true --output output/osx-x64/
 
+            
+    - name: Publish for osx-arm64
+      if: startsWith(github.ref, 'refs/tags/')
+      run: >
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime osx-arm64 --self-contained true --output output/osx-arm64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-arm64 --self-contained true --output output/osx-arm64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-arm64 --self-contained true --output output/osx-arm64/
+
     - name: Remove .pdb files
       if: startsWith(github.ref, 'refs/tags/')
       run: rm output/*/*.pdb
@@ -152,6 +160,12 @@ jobs:
         dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/;
         dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/;
         dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/
+    
+    - name: Publish for osx-arm64-full
+      run: >
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/
 
     - uses: actions/upload-artifact@v3
       name: Upload artifacts for win-x86
@@ -276,6 +290,13 @@ jobs:
       with:
         name: osx-x64-full
         path: output/osx-x64-full/
+        retention-days: 7
+
+    - uses: actions/upload-artifact@v3
+      name: Upload artifacts for osx-arm64-full
+      with:
+        name: osx-arm64-full
+        path: output/osx-arm64-full/
         retention-days: 7
         
     - name: Zip published files
