@@ -167,7 +167,7 @@ jobs:
         dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
         dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-x86
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -175,7 +175,7 @@ jobs:
         path: output/win-x86/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-x64
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -183,7 +183,7 @@ jobs:
         path: output/win-x64/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-arm
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -191,7 +191,7 @@ jobs:
         path: output/win-arm/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-arm64
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -199,7 +199,7 @@ jobs:
         path: output/win-arm64/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for linux-x64
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -207,7 +207,7 @@ jobs:
         path: output/linux-x64/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for linux-arm
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -215,7 +215,7 @@ jobs:
         path: output/linux-arm/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for linux-arm64
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -223,7 +223,7 @@ jobs:
         path: output/linux-arm64/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for osx-x64
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -231,7 +231,7 @@ jobs:
         path: output/osx-x64/
         retention-days: 7
         
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-x86-full
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -239,14 +239,14 @@ jobs:
         path: output/win-x86-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-x64-full
       with:
         name: win-x64-full
         path: output/win-x64-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-arm-full
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -254,7 +254,7 @@ jobs:
         path: output/win-arm-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-arm64-full
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -262,14 +262,14 @@ jobs:
         path: output/win-arm64-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for linux-x64-full
       with:
         name: linux-x64-full
         path: output/linux-x64-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for linux-arm-full
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -277,7 +277,7 @@ jobs:
         path: output/linux-arm-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for linux-arm64-full
       if: startsWith(github.ref, 'refs/tags/')
       with:
@@ -285,14 +285,14 @@ jobs:
         path: output/linux-arm64-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for osx-x64-full
       with:
         name: osx-x64-full
         path: output/osx-x64-full/
         retention-days: 7
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifacts for osx-arm64-full
       with:
         name: osx-arm64-full
