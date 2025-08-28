@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1703.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHasher.Library", "FileHasher.Library\FileHasher.Library.csproj", "{BA670E24-EEE7-49F6-B044-E93A05D19194}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHasher.CLI.Check", "FileHasher.CLI.Check\FileHasher.CLI.Check.csproj", "{EACA2AA2-3E7C-433A-A91C-25C05F695B1E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorConsoleLibrary", "ColorConsoleLibrary\ColorConsoleLibrary.csproj", "{2AF20879-616C-47B0-9A81-9F70D9DF2D58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHasher.GUI.WinForms", "FileHasher.GUI.WinForms\FileHasher.GUI.WinForms.csproj", "{78596C7D-5674-4782-83E3-3015969D24D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{2AF20879-616C-47B0-9A81-9F70D9DF2D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AF20879-616C-47B0-9A81-9F70D9DF2D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AF20879-616C-47B0-9A81-9F70D9DF2D58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78596C7D-5674-4782-83E3-3015969D24D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78596C7D-5674-4782-83E3-3015969D24D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78596C7D-5674-4782-83E3-3015969D24D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78596C7D-5674-4782-83E3-3015969D24D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
