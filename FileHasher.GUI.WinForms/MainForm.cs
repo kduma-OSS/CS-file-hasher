@@ -1,7 +1,6 @@
 ﻿using FileHasher.Library;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace FileHasher.GUI.WinForms
@@ -72,7 +71,8 @@ namespace FileHasher.GUI.WinForms
 
         private void FLoad(object sender, EventArgs e)
         {
-
+            // This method is intentionally left empty.
+            // Required as a Form Load event handler; no action needed on load.
         }
 
         private void FDragEnter(object sender, DragEventArgs e)
@@ -131,17 +131,14 @@ namespace FileHasher.GUI.WinForms
 
             if (task.TaskType == FileTask.Type.Hash)
             {
-                for (int i = 0; i <= 100; i += 10)
+                var hash = Hasher.File(task.FilePath);
+
+                using (var stream = new FileStream($"{task.FilePath}.ph", FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan))
                 {
-                    var hash = Hasher.File(task.FilePath);
-
-                    using (var stream = new FileStream($"{task.FilePath}.ph", FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan))
-                    {
-                        stream.Write(hash.Pack());
-                    }
-
-                    e.Result = FileTask.Status.Completed;
+                    stream.Write(hash.Pack());
                 }
+
+                e.Result = FileTask.Status.Completed;
             }
             else if (task.TaskType == FileTask.Type.Verify)
             {

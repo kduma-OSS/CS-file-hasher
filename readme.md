@@ -2,6 +2,10 @@
 
 MD5 and SHA1 file hash calculator and checker
 
+Check full documentation here:
+- [CLI Tool](https://opensource.duma.sh/apps/file-hasher)
+- [.NET Library](https://opensource.duma.sh/libraries/net/file-hasher)
+
 ### `hasher` tool
 
 Main tool containing two others.
