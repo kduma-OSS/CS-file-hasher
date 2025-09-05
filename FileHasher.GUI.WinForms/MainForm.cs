@@ -131,17 +131,14 @@ namespace FileHasher.GUI.WinForms
 
             if (task.TaskType == FileTask.Type.Hash)
             {
-                for (int i = 0; i <= 100; i += 10)
+                var hash = Hasher.File(task.FilePath);
+
+                using (var stream = new FileStream($"{task.FilePath}.ph", FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan))
                 {
-                    var hash = Hasher.File(task.FilePath);
-
-                    using (var stream = new FileStream($"{task.FilePath}.ph", FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan))
-                    {
-                        stream.Write(hash.Pack());
-                    }
-
-                    e.Result = FileTask.Status.Completed;
+                    stream.Write(hash.Pack());
                 }
+
+                e.Result = FileTask.Status.Completed;
             }
             else if (task.TaskType == FileTask.Type.Verify)
             {
