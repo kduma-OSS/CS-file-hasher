@@ -71,7 +71,8 @@ namespace FileHasher.GUI.WinForms
 
         private void FLoad(object sender, EventArgs e)
         {
-
+            // This method is intentionally left empty.
+            // Required as a Form Load event handler; no action needed on load.
         }
 
         private void FDragEnter(object sender, DragEventArgs e)
