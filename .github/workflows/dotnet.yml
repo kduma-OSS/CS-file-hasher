@@ -112,7 +112,8 @@ jobs:
       run: >
         dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
         dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.GUI.WinForms.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/
 
     - name: Publish for win-arm64-full
       if: startsWith(github.ref, 'refs/tags/')
