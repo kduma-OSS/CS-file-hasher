@@ -1,7 +1,6 @@
 ﻿using FileHasher.Library;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace FileHasher.GUI.WinForms
