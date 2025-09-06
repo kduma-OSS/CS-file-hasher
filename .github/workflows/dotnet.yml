@@ -63,20 +63,32 @@ jobs:
     strategy:
       matrix:
         runtime: [win-x86, win-x64, win-arm64, linux-x64, linux-arm, linux-arm64, osx-x64, osx-arm64]
-        build_variant: [self-contained, full]
+        build_variant: [self-contained, full, no-dependencies, full-no-dependencies]
         include:
          - runtime: win-x86
            build_variant: gui
          - runtime: win-x86
            build_variant: full-gui
+         - runtime: win-x86
+           build_variant: gui-no-dependencies
+         - runtime: win-x86
+           build_variant: full-gui-no-dependencies
          - runtime: win-x64
            build_variant: gui
          - runtime: win-x64
            build_variant: full-gui
+         - runtime: win-x64
+           build_variant: gui-no-dependencies
+         - runtime: win-x64
+           build_variant: full-gui-no-dependencies
          - runtime: win-arm64
            build_variant: gui
          - runtime: win-arm64
            build_variant: full-gui
+         - runtime: win-arm64
+           build_variant: gui-no-dependencies
+         - runtime: win-arm64
+           build_variant: full-gui-no-dependencies
     steps:
     - uses: actions/checkout@v3
       with:
@@ -107,6 +119,7 @@ jobs:
         output_directory: ${{ matrix.runtime }}${{ (matrix.build_variant != 'self-contained' && format('-{0}', matrix.build_variant)) || '' }}
         full_build: ${{ matrix.build_variant == 'full' || matrix.build_variant == 'full-gui' && 'true' || 'false' }}
         build_gui: ${{ matrix.build_variant == 'gui' && 'only' || matrix.build_variant == 'full-gui' && 'true' || 'false' }}
+        self_contained: ${{ endsWith(matrix.build_variant, 'no-dependencies') && 'false' || 'true' }}
   
   release:
     needs: build   

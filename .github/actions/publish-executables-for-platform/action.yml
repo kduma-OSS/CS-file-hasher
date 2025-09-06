@@ -16,6 +16,10 @@ inputs:
     description: 'Remove .pdb files from output directory (true/false)'
     required: false
     default: 'false'
+  self_contained:
+    description: 'If true, the published application will include the .NET runtime and all necessary libraries, allowing it to run on machines without .NET installed. If false, the target machine must have the appropriate .NET runtime installed. (true/false)'
+    required: false
+    default: 'true'
   product_version:
     description: 'Product version'
     required: false
