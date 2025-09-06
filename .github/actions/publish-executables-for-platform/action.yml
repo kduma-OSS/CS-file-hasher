@@ -1,0 +1,96 @@
+name: 'Dotnet Multi Publish'
+description: 'Publishes multiple .NET projects for a given runtime.'
+inputs:
+  runtime:
+    description: 'Target runtime identifier'
+    required: true
+  full_build:
+    description: 'If true, binaries wont be distributed as single file. Instead, all dependencies will be included alongside the main executables. (true/false)'
+    required: false
+    default: 'false'
+  build_gui:
+    description: 'Build GUI project only (false/true/only)'
+    required: false
+    default: 'false'
+  remove_pdb_files:
+    description: 'Remove .pdb files from output directory (true/false)'
+    required: false
+    default: 'false'
+  product_version:
+    description: 'Product version'
+    required: false
+    default: ''
+  file_version:
+    description: 'File version'
+    required: false
+    default: ''
+  output_directory:
+    description: 'Output directory'
+    required: false
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: Set versions
+      id: prepare_parameters
+      shell: bash
+      run: |
+       echo "product_version=${{ inputs.product_version || env.VERSION }}" >> $GITHUB_OUTPUT
+       echo "file_version=${{ inputs.file_version || env.FILE_VERSION }}" >> $GITHUB_OUTPUT
+       echo "output_directory=output/${{ inputs.output_directory || inputs.runtime }}/" >> $GITHUB_OUTPUT
+
+    - name: Set common publish parameters
+      id: set_publish_params
+      shell: bash
+      run: |
+        if [[ "${{ inputs.full_build }}" == "false" ]]; then
+          FULL_BUILD="-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true -p:PublishTrimmed=false"
+        else
+          FULL_BUILD="-p:PublishSingleFile=false -p:IncludeNativeLibrariesForSelfExtract=false -p:IncludeAllContentForSelfExtract=false -p:PublishTrimmed=false"
+        fi
+
+        echo "DOTNET_PUBLISH_COMMON=--configuration Release \
+          /p:EnableWindowsTargeting=true \
+          /p:Version=${{ steps.prepare_parameters.outputs.product_version }} \
+          /p:FileVersion=${{ steps.prepare_parameters.outputs.file_version }} \
+          /p:AssemblyVersion=${{ steps.prepare_parameters.outputs.file_version }} \
+          --runtime ${{ inputs.runtime }} \
+          --self-contained true \
+          $FULL_BUILD \
+          --output ${{ steps.prepare_parameters.outputs.output_directory }}" >> $GITHUB_ENV
+
+    - name: Publish hasher executable
+      if: ${{ inputs.build_gui != 'only' }}
+      shell: bash
+      run: dotnet publish FileHasher.CLI/FileHasher.CLI.csproj $DOTNET_PUBLISH_COMMON
+
+    - name: Publish hash executable
+      if: ${{ inputs.build_gui != 'only' }}
+      shell: bash
+      run: dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj $DOTNET_PUBLISH_COMMON
+
+    - name: Publish check executable
+      if: ${{ inputs.build_gui != 'only' }}
+      shell: bash
+      run: dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj $DOTNET_PUBLISH_COMMON
+
+    - name: Publish gui executable
+      if: ${{ inputs.build_gui != 'false' }}
+      shell: bash
+      run: dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj $DOTNET_PUBLISH_COMMON
+
+    - name: Remove .pdb files
+      if: ${{ inputs.remove_pdb_files == 'true' }}
+      shell: bash
+      run: find ${{ steps.prepare_parameters.outputs.output_directory }} -name '*.pdb' -type f -delete
+      
+    - name: Add hash files to output
+      shell: bash
+      run: find ${{ steps.prepare_parameters.outputs.output_directory }} -type f -exec ./hash/hash {} \;
+
+    - uses: actions/upload-artifact@v4
+      name: Upload artifacts
+      with:
+        name: ${{ inputs.output_directory || inputs.runtime }}
+        path: ${{ steps.prepare_parameters.outputs.output_directory }}
+        retention-days: 7
