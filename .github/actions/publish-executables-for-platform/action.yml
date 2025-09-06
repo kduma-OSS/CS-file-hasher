@@ -86,7 +86,7 @@ runs:
       
     - name: Add hash files to output
       shell: bash
-      run: find ${{ steps.prepare_parameters.outputs.output_directory }} -type f -exec ./hash {} \;
+      run: find ${{ steps.prepare_parameters.outputs.output_directory }} -type f -exec ./hash/hash {} \;
 
     - uses: actions/upload-artifact@v4
       name: Upload artifacts

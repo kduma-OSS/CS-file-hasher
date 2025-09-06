@@ -85,12 +85,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: hash
+        path: ./hash
+
+    - name: make hash tool executable
+      run: chmod +x ./hash/hash
       
     - name: Prepare output directory
       run: mkdir output
       
-    - name: ls
-      run: ls -la
 
     - name: Publish
       uses: ./.github/actions/publish-executables-for-platform
