@@ -89,6 +89,7 @@ jobs:
         build_gui: only
 
     - name: Publish full executables with GUI
+      if: startsWith(matrix.runtime, 'win-')
       uses: ./.github/actions/publish-executables-for-platform
       with:
         runtime: ${{ matrix.runtime }}
