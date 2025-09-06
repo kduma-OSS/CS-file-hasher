@@ -94,7 +94,7 @@ jobs:
       with:
         runtime: ${{ matrix.runtime }}
         remove_pdb_files: ${{ startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
-        output_directory: ${{ matrix.runtime }}-gui-full
+        output_directory: ${{ matrix.runtime }}-full-gui
         full_build: true
         build_gui: true
   
