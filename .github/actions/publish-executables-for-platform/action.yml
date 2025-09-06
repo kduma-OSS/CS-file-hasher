@@ -44,7 +44,11 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.full_build }}" == "false" ]]; then
-          FULL_BUILD="-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true -p:PublishTrimmed=true"
+          if [[ "${{ inputs.build_gui }}" == "false" ]]; then
+            FULL_BUILD="-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true -p:PublishTrimmed=true"
+          else
+            FULL_BUILD="-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true -p:PublishTrimmed=false"
+          fi
         else
           FULL_BUILD="-p:PublishSingleFile=false -p:IncludeNativeLibrariesForSelfExtract=false -p:IncludeAllContentForSelfExtract=false -p:PublishTrimmed=false"
         fi
