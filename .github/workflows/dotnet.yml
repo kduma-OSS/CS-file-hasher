@@ -53,13 +53,13 @@ jobs:
         dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x86 --self-contained true --output output/win-x86-gui/
 
     - name: Publish for win-x64
+      if: startsWith(github.ref, 'refs/tags/')
       run: >
         dotnet publish FileHasher.CLI/FileHasher.CLI.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true --output output/win-x64/;
         dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true --output output/win-x64/;
         dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true --output output/win-x64/
 
     - name: Publish for win-x64-gui
-      if: startsWith(github.ref, 'refs/tags/')
       run: >
         dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj  --configuration Release --property:EnableWindowsTargeting=true --runtime win-x64 --self-contained true --output output/win-x64-gui/
 
