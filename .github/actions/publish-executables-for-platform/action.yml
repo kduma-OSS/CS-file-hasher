@@ -16,6 +16,10 @@ inputs:
     description: 'Remove .pdb files from output directory (true/false)'
     required: false
     default: 'false'
+  self_contained:
+    description: 'If true, the published application will include the .NET runtime and all necessary libraries, allowing it to run on machines without .NET installed. If false, the target machine must have the appropriate .NET runtime installed. (true/false)'
+    required: false
+    default: 'true'
   product_version:
     description: 'Product version'
     required: false
@@ -49,13 +53,20 @@ runs:
           FULL_BUILD="-p:PublishSingleFile=false -p:IncludeNativeLibrariesForSelfExtract=false -p:IncludeAllContentForSelfExtract=false -p:PublishTrimmed=false"
         fi
 
+        if [[ "${{ inputs.self_contained }}" == "true" ]]; then
+          SELF_CONTAINED="-p:SelfContained=true"
+        else
+          SELF_CONTAINED="-p:SelfContained=false"
+        fi
+
         echo "DOTNET_PUBLISH_COMMON=--configuration Release \
           /p:EnableWindowsTargeting=true \
+          /p:IncludeSourceRevisionInInformationalVersion=false \
           /p:Version=${{ steps.prepare_parameters.outputs.product_version }} \
           /p:FileVersion=${{ steps.prepare_parameters.outputs.file_version }} \
           /p:AssemblyVersion=${{ steps.prepare_parameters.outputs.file_version }} \
           --runtime ${{ inputs.runtime }} \
-          --self-contained true \
+          $SELF_CONTAINED \
           $FULL_BUILD \
           --output ${{ steps.prepare_parameters.outputs.output_directory }}" >> $GITHUB_ENV
 

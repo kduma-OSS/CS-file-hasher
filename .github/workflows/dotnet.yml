@@ -63,20 +63,32 @@ jobs:
     strategy:
       matrix:
         runtime: [win-x86, win-x64, win-arm64, linux-x64, linux-arm, linux-arm64, osx-x64, osx-arm64]
-        build_variant: [self-contained, full]
+        build_variant: [self-contained, full, no-dependencies, full-no-dependencies]
         include:
          - runtime: win-x86
            build_variant: gui
          - runtime: win-x86
            build_variant: full-gui
+         - runtime: win-x86
+           build_variant: gui-no-dependencies
+         - runtime: win-x86
+           build_variant: full-gui-no-dependencies
          - runtime: win-x64
            build_variant: gui
          - runtime: win-x64
            build_variant: full-gui
+         - runtime: win-x64
+           build_variant: gui-no-dependencies
+         - runtime: win-x64
+           build_variant: full-gui-no-dependencies
          - runtime: win-arm64
            build_variant: gui
          - runtime: win-arm64
            build_variant: full-gui
+         - runtime: win-arm64
+           build_variant: gui-no-dependencies
+         - runtime: win-arm64
+           build_variant: full-gui-no-dependencies
     steps:
     - uses: actions/checkout@v3
       with:
@@ -105,8 +117,9 @@ jobs:
         runtime: ${{ matrix.runtime }}
         remove_pdb_files: ${{ startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
         output_directory: ${{ matrix.runtime }}${{ (matrix.build_variant != 'self-contained' && format('-{0}', matrix.build_variant)) || '' }}
-        full_build: ${{ matrix.build_variant == 'full' || matrix.build_variant == 'full-gui' && 'true' || 'false' }}
-        build_gui: ${{ matrix.build_variant == 'gui' && 'only' || matrix.build_variant == 'full-gui' && 'true' || 'false' }}
+        full_build: ${{ matrix.build_variant == 'full' && 'true' || matrix.build_variant == 'full-gui' && 'true' || matrix.build_variant == 'full-no-dependencies' && 'true' || matrix.build_variant == 'full-gui-no-dependencies' && 'true' || 'false' }}
+        build_gui: ${{ matrix.build_variant == 'gui' && 'only' || matrix.build_variant == 'gui-no-dependencies' && 'only' || matrix.build_variant == 'full-gui' && 'true' || matrix.build_variant == 'full-gui-no-dependencies' && 'true' || 'false' }}
+        self_contained: ${{ endsWith(matrix.build_variant, 'no-dependencies') && 'false' || 'true' }}
   
   release:
     needs: build   
@@ -124,7 +137,12 @@ jobs:
 
     - name: Zip published files
       working-directory: ./output/
-      run: for i in *; do [ -d "$i" ] && zip --recurse-paths --move --test "${i%/}.zip" "$i"; done
+      run: |
+        for i in *; do
+          if [ -d "$i" ]; then
+            (cd "$i" && zip --recurse-paths --test "../${i%/}.zip" .) && rm -rf "$i"
+          fi
+        done
         
     - name: Release
       uses: softprops/action-gh-release@v1
