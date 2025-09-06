@@ -19,7 +19,11 @@ runs:
       run: |
           dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj \
               --configuration Release \
-              /p:EnableWindowsTargeting=true \
+              -p:Version=${{ env.VERSION }} \
+              -p:FileVersion=${{ env.FILE_VERSION }} \
+              -p:AssemblyVersion=${{ env.FILE_VERSION }}
+              -p:EnableWindowsTargeting=true \
+              -p:PublishTrimmed=false \
               --output hash/
 
           ls -la
