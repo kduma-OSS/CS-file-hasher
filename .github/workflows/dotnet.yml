@@ -354,7 +354,8 @@ jobs:
         
     - name: Zip published files
       if: startsWith(github.ref, 'refs/tags/')
-      run: for i in output/*/; do zip --junk-paths --recurse-paths --move --test "${i%/}.zip" "$i"; done
+      working-directory: ./output/
+      run: for i in *; do [ -d "$i" ] && zip --recurse-paths --move --test "${i%/}.zip" "$i"; done
         
     - name: Release
       uses: softprops/action-gh-release@v1
