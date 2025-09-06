@@ -55,7 +55,7 @@ runs:
           /p:FileVersion=${{ steps.prepare_parameters.outputs.file_version }} \
           /p:AssemblyVersion=${{ steps.prepare_parameters.outputs.file_version }} \
           --runtime ${{ inputs.runtime }} \
-          --self-contained true
+          --self-contained true \
           $FULL_BUILD \
           --output ${{ steps.prepare_parameters.outputs.output_directory }}" >> $GITHUB_ENV
 
