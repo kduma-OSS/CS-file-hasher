@@ -53,6 +53,12 @@ runs:
           FULL_BUILD="-p:PublishSingleFile=false -p:IncludeNativeLibrariesForSelfExtract=false -p:IncludeAllContentForSelfExtract=false -p:PublishTrimmed=false"
         fi
 
+        if [[ "${{ inputs.self_contained }}" == "true" ]]; then
+          SELF_CONTAINED="-p:SelfContained=true"
+        else
+          SELF_CONTAINED="-p:SelfContained=false"
+        fi
+
         echo "DOTNET_PUBLISH_COMMON=--configuration Release \
           /p:EnableWindowsTargeting=true \
           /p:IncludeSourceRevisionInInformationalVersion=false \
@@ -60,7 +66,7 @@ runs:
           /p:FileVersion=${{ steps.prepare_parameters.outputs.file_version }} \
           /p:AssemblyVersion=${{ steps.prepare_parameters.outputs.file_version }} \
           --runtime ${{ inputs.runtime }} \
-          --self-contained true \
+          $SELF_CONTAINED \
           $FULL_BUILD \
           --output ${{ steps.prepare_parameters.outputs.output_directory }}" >> $GITHUB_ENV
 
