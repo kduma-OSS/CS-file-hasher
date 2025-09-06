@@ -53,11 +53,11 @@ jobs:
         BASE_TAG_STRIPPED=$(echo "$BASE_TAG" | sed 's/^v//')
         # Compose version string
         if [ -n "$BASE_TAG_STRIPPED" ]; then
-          VERSION="${BASE_TAG_STRIPPED}-next+${ GIT_HASH }"
-          FILE_VERSION="${BASE_TAG_STRIPPED}.${ GIT_HASH_NUM }"
+          VERSION="${BASE_TAG_STRIPPED}-next+${{ env.GIT_HASH }}"
+          FILE_VERSION="${BASE_TAG_STRIPPED}.${{ env.GIT_HASH_NUM }}"
         else
-          VERSION="0.0.0-next+${ GIT_HASH }"
-          FILE_VERSION="0.0.0.${ GIT_HASH_NUM }"
+          VERSION="0.0.0-next+${{ env.GIT_HASH }}"
+          FILE_VERSION="0.0.0.${{ env.GIT_HASH_NUM }}"
         fi
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         echo "FILE_VERSION=$FILE_VERSION" >> $GITHUB_ENV
@@ -69,7 +69,7 @@ jobs:
       id: get_version
       run: |
         echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-        echo "FILE_VERSION=${GITHUB_REF#refs/tags/v}.${ GIT_HASH_NUM }" >> $GITHUB_ENV
+        echo "FILE_VERSION=${GITHUB_REF#refs/tags/v}.${{ env.GIT_HASH_NUM }" >> $GITHUB_ENV
         echo "Calculated version is: $VERSION"
         echo "Calculated file version is: $FILE_VERSION"
         
