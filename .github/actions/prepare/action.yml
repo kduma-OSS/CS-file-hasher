@@ -17,9 +17,12 @@ runs:
     - name: Build hash for use in build process
       shell: bash
       run: |
-          dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj $DOTNET_PUBLISH_COMMON \
+          dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj \
               --configuration Release \
               /p:EnableWindowsTargeting=true \
               --output hash/
+
+          ls -la
+          ls -la hash/
       
           ./hash/hash --version
