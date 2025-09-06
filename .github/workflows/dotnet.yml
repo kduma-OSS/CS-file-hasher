@@ -55,7 +55,6 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     continue-on-error: true
-    if: ${{ startsWith(matrix.runtime, 'win-') || (matrix.build_variant != 'gui' && matrix.build_variant != 'full-gui') }}
 
     strategy:
       matrix:
