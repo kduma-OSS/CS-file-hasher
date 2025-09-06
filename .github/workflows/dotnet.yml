@@ -124,7 +124,12 @@ jobs:
 
     - name: Zip published files
       working-directory: ./output/
-      run: for i in *; do [ -d "$i" ] && zip --recurse-paths --move --test "${i%/}.zip" "$i"; done
+      run: |
+        for i in *; do
+          if [ -d "$i" ]; then
+            (cd "$i" && zip --recurse-paths --test "../${i%/}.zip" .) && rm -rf "$i"
+          fi
+        done
         
     - name: Release
       uses: softprops/action-gh-release@v1
