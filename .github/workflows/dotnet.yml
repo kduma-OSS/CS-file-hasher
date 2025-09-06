@@ -69,7 +69,8 @@ jobs:
       id: get_version
       run: |
         VERSION="${GITHUB_REF#refs/tags/v}"
-        FILE_VERSION="${GITHUB_REF#refs/tags/v}.${{ env.GIT_REVISION_NUM }}"
+        BASE_VERSION=$(echo "${GITHUB_REF#refs/tags/v}" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
+        FILE_VERSION="${BASE_VERSION}.${{ env.GIT_REVISION_NUM }}"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         echo "FILE_VERSION=$FILE_VERSION" >> $GITHUB_ENV
         echo "Calculated version is: $VERSION"
