@@ -1,26 +1,25 @@
 ﻿using FileHasher.Library;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
 
 namespace FileHasher.GUI.WinForms
 {
     public partial class MainForm : Form
     {
-        ObservableCollection<FileTask> tasks = new();
+        private readonly ObservableCollection<FileTask> _tasks = [];
 
         public MainForm(List<string> files)
         {
             InitializeComponent();
-            tasks.CollectionChanged += TasksUpdated;
+            _tasks.CollectionChanged += TasksUpdated;
 
             foreach (var file in files)
             {
-                if(!File.Exists(file))
+                if (!File.Exists(file))
                     continue;
 
                 var extension = Path.GetExtension(file);
-                tasks.Add(new FileTask(file, (extension != ".ph" && extension != ".md5" && extension != ".sha1") ? FileTask.Type.Hash : FileTask.Type.Verify));
+                _tasks.Add(new FileTask(file, (extension != ".ph" && extension != ".md5" && extension != ".sha1") ? FileTask.Type.Hash : FileTask.Type.Verify));
             }
         }
 
@@ -35,7 +34,7 @@ namespace FileHasher.GUI.WinForms
 
 
             ListViewItem? itemView = null;
-            foreach (var task in tasks)
+            foreach (var task in _tasks)
             {
                 var item = new ListViewItem([
                     Path.GetFileName(task.FilePath),
@@ -46,10 +45,10 @@ namespace FileHasher.GUI.WinForms
                 switch (task.TaskStatus)
                 {
                     case FileTask.Status.Completed:
-                        item.BackColor = System.Drawing.Color.LightGreen;
+                        item.BackColor = Color.LightGreen;
                         break;
                     case FileTask.Status.Failed:
-                        item.BackColor = System.Drawing.Color.LightCoral;
+                        item.BackColor = Color.LightCoral;
                         break;
                     case FileTask.Status.Working:
                         itemView = item;
@@ -61,10 +60,7 @@ namespace FileHasher.GUI.WinForms
 
             itemView ??= listView1.Items.Count > 0 ? listView1.Items[^1] : null;
 
-            if (itemView != null)
-            {
-                itemView.EnsureVisible();
-            }
+            itemView?.EnsureVisible();
 
             StartWorkIfIdle();
         }
@@ -83,10 +79,7 @@ namespace FileHasher.GUI.WinForms
                 return;
             }
 
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.Copy;
-            else
-                e.Effect = DragDropEffects.None;
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void FDragDrop(object sender, DragEventArgs e)
@@ -94,16 +87,13 @@ namespace FileHasher.GUI.WinForms
             if (e.Data == null)
                 return;
 
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetData(DataFormats.FileDrop) is not string[] files) return;
+            
+            
+            foreach (var file in files)
             {
-                if (e.Data.GetData(DataFormats.FileDrop) is string[] files)
-                {
-                    foreach (var file in files)
-                    {
-                        var extension = Path.GetExtension(file);
-                        tasks.Add(new FileTask(file, (extension != ".ph" && extension != ".md5" && extension != ".sha1") ? FileTask.Type.Hash : FileTask.Type.Verify));
-                    }
-                }
+                var extension = Path.GetExtension(file);
+                _tasks.Add(new FileTask(file, (extension != ".ph" && extension != ".md5" && extension != ".sha1") ? FileTask.Type.Hash : FileTask.Type.Verify));
             }
         }
 
@@ -112,13 +102,13 @@ namespace FileHasher.GUI.WinForms
             if (backgroundWorker1.IsBusy)
                 return;
 
-            if (tasks.Any(t => t.TaskStatus == FileTask.Status.Working))
+            if (_tasks.Any(t => t.TaskStatus == FileTask.Status.Working))
                 return;
 
-            if (!tasks.Any(t => t.TaskStatus == FileTask.Status.Pending))
+            if (_tasks.All(t => t.TaskStatus != FileTask.Status.Pending))
                 return;
 
-            var task = tasks.First(t => t.TaskStatus == FileTask.Status.Pending);
+            var task = _tasks.First(t => t.TaskStatus == FileTask.Status.Pending);
             task.TaskStatus = FileTask.Status.Working;
 
             backgroundWorker1.RunWorkerAsync(task);
@@ -129,50 +119,57 @@ namespace FileHasher.GUI.WinForms
             if (e.Argument is not FileTask task)
                 return;
 
-            if (task.TaskType == FileTask.Type.Hash)
+            Hash? hash;
+            
+            switch (task.TaskType)
             {
-                var hash = Hasher.File(task.FilePath);
-
-                using (var stream = new FileStream($"{task.FilePath}.ph", FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan))
+                case FileTask.Type.Hash:
                 {
-                    stream.Write(hash.Pack());
+                    hash = Hasher.File(task.FilePath);
+
+                    using (var stream = new FileStream($"{task.FilePath}.ph", FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan))
+                    {
+                        stream.Write(hash.Pack());
+                    }
+
+                    e.Result = FileTask.Status.Completed;
+                    break;
                 }
-
-                e.Result = FileTask.Status.Completed;
-            }
-            else if (task.TaskType == FileTask.Type.Verify)
-            {
-                var extension = Path.GetExtension(task.FilePath);
-                var baseFile = $"{Path.GetDirectoryName(task.FilePath)}{Path.DirectorySeparatorChar}{Path.GetFileNameWithoutExtension(task.FilePath)}";
-
-                Library.Hash? hash;
-                var valid = false;
-                switch (extension)
+                case FileTask.Type.Verify:
                 {
-                    case ".ph":
-                        using (var stream = new FileStream(task.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024))
-                        {
-                            var currentHashFile = Library.Hash.Unpack(stream);
-                            valid = Checker.File(baseFile, currentHashFile);
-                        }
-                        break;
-                    case ".md5":
-                        hash = Hasher.File(baseFile);
-                        valid = hash.Md5 == File.ReadAllText(task.FilePath);
-                        break;
-                    case ".sha1":
-                        hash = Hasher.File(baseFile);
-                        valid = hash.Sha1 == File.ReadAllText(task.FilePath);
-                        break;
-                }
+                    var extension = Path.GetExtension(task.FilePath);
+                    var baseFile = $"{Path.GetDirectoryName(task.FilePath)}{Path.DirectorySeparatorChar}{Path.GetFileNameWithoutExtension(task.FilePath)}";
 
-                e.Result = valid ? FileTask.Status.Completed : FileTask.Status.Failed;
+                    
+                    var valid = false;
+                    switch (extension)
+                    {
+                        case ".ph":
+                            using (var stream = new FileStream(task.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024))
+                            {
+                                var currentHashFile = Hash.Unpack(stream);
+                                valid = Checker.File(baseFile, currentHashFile);
+                            }
+                            break;
+                        case ".md5":
+                            hash = Hasher.File(baseFile);
+                            valid = hash.Md5 == File.ReadAllText(task.FilePath);
+                            break;
+                        case ".sha1":
+                            hash = Hasher.File(baseFile);
+                            valid = hash.Sha1 == File.ReadAllText(task.FilePath);
+                            break;
+                    }
+
+                    e.Result = valid ? FileTask.Status.Completed : FileTask.Status.Failed;
+                    break;
+                }
             }
         }
 
         private void WProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            var task = tasks.First(t => t.TaskStatus == FileTask.Status.Working);
+            var task = _tasks.First(t => t.TaskStatus == FileTask.Status.Working);
             task.Progress = e.ProgressPercentage;
 
             TasksUpdated();
@@ -183,33 +180,37 @@ namespace FileHasher.GUI.WinForms
             if (e.Result is not FileTask.Status status)
                 return;
 
-            var task = tasks.First(t => t.TaskStatus == FileTask.Status.Working);
+            var task = _tasks.First(t => t.TaskStatus == FileTask.Status.Working);
             task.TaskStatus = status;
 
             TasksUpdated();
             StartWorkIfIdle();
         }
 
-        private void zakończToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void otwórzToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var ofd = new OpenFileDialog())
-            {
-                ofd.Multiselect = true;
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    foreach (var file in ofd.FileNames)
-                    {
-                        var extension = Path.GetExtension(file);
-                        tasks.Add(new FileTask(file, (extension != ".ph" && extension != ".md5" && extension != ".sha1") ? FileTask.Type.Hash : FileTask.Type.Verify));
-                    }
-                }
-            }
+            using var ofd = new OpenFileDialog();
+            ofd.Multiselect = true;
 
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+            
+            foreach (var file in ofd.FileNames)
+            {
+                var extension = Path.GetExtension(file);
+                _tasks.Add(new FileTask(file, (extension != ".ph" && extension != ".md5" && extension != ".sha1") ? FileTask.Type.Hash : FileTask.Type.Verify));
+            }
+        }
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var aboutBox = new AboutBox();
+            
+            aboutBox.ShowDialog(this);
         }
     }
 }
