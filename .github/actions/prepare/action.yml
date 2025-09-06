@@ -13,4 +13,13 @@ runs:
     - name: Restore dependencies
       shell: bash
       run: dotnet restore /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }}
+    
+    - name: Build hash for use in build process
+      shell: bash
+      run: |
+          dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj $DOTNET_PUBLISH_COMMON \
+              --configuration Release \
+              /p:EnableWindowsTargeting=true \
+              --output hash/
       
+          ./hash/hash --version
