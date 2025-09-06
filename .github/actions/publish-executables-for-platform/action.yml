@@ -77,7 +77,7 @@ runs:
     - name: Publish gui executable
       if: ${{ inputs.build_gui != 'false' }}
       shell: bash
-      run: dotnet publish FileHasher.CLI.Check/FileHasher.GUI.WinForms.csproj $DOTNET_PUBLISH_COMMON
+      run: dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj $DOTNET_PUBLISH_COMMON
 
     - name: Remove .pdb files
       if: ${{ inputs.remove_pdb_files == 'true' }}
