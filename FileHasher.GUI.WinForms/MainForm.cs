@@ -124,7 +124,6 @@ namespace FileHasher.GUI.WinForms
             
             switch (task.TaskType)
             {
-                default:
                 case FileTask.Type.Hash:
                 {
                     hash = Hasher.File(task.FilePath);
