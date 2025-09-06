@@ -1,7 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net9.0</TargetFramework>
+	  <TargetFramework>net9.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>FileHasher Library for .NET</Title>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Authors>krystianduma</Authors>
+    <Copyright>Krystian Duma</Copyright>
+    <Description>A library to calculate and verify hashes in binary format</Description>
+    <RepositoryUrl>https://github.com/kduma-OSS/CS-file-hasher</RepositoryUrl>
+    <PackageProjectUrl>https://opensource.duma.sh/libraries/net/file-hasher</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
