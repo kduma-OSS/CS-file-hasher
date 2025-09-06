@@ -53,10 +53,10 @@ jobs:
         BASE_TAG_STRIPPED=$(echo "$BASE_TAG" | sed 's/^v//')
         # Compose version string
         if [ -n "$BASE_TAG_STRIPPED" ]; then
-          VERSION="${BASE_TAG_STRIPPED}-next+${{ env.GIT_HASH }}"
+          VERSION="${BASE_TAG_STRIPPED}-next+build${{ env.GIT_HASH_NUM }}"
           FILE_VERSION="${BASE_TAG_STRIPPED}.${{ env.GIT_HASH_NUM }}"
         else
-          VERSION="0.0.0-next+${{ env.GIT_HASH }}"
+          VERSION="0.0.0-next+build${{ env.GIT_HASH_NUM }}"
           FILE_VERSION="0.0.0.${{ env.GIT_HASH_NUM }}"
         fi
         echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -74,10 +74,10 @@ jobs:
         echo "Calculated file version is: $FILE_VERSION"
         
     - name: Restore dependencies
-      run: dotnet restore /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }}
+      run: dotnet restore /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }}
       
     - name: Build
-      run: dotnet build --configuration Release --no-restore /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }}
+      run: dotnet build --configuration Release --no-restore /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }}
       
     - name: Test
       run: dotnet test --no-restore --verbosity normal
@@ -88,73 +88,73 @@ jobs:
     - name: Publish for win-x86
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true --output output/win-x86/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true --output output/win-x86/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true --output output/win-x86/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true --output output/win-x86/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true --output output/win-x86/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true --output output/win-x86/
 
     - name: Publish for win-x86-gui
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true --output output/win-x86-gui/
+        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true --output output/win-x86-gui/
 
     - name: Publish for win-x64
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true --output output/win-x64/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true --output output/win-x64/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true --output output/win-x64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true --output output/win-x64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true --output output/win-x64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true --output output/win-x64/
 
     - name: Publish for win-x64-gui
       run: >
-        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true --output output/win-x64-gui/
+        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true --output output/win-x64-gui/
 
     - name: Publish for win-arm64
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64/
 
     - name: Publish for win-arm64-gui
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64-gui/
+        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true --output output/win-arm64-gui/
 
     - name: Publish for linux-x64
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-x64 --self-contained true --output output/linux-x64/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-x64 --self-contained true --output output/linux-x64/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-x64 --self-contained true --output output/linux-x64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-x64 --self-contained true --output output/linux-x64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-x64 --self-contained true --output output/linux-x64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-x64 --self-contained true --output output/linux-x64/
 
     - name: Publish for linux-arm
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm --self-contained true --output output/linux-arm/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm --self-contained true --output output/linux-arm/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm --self-contained true --output output/linux-arm/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm --self-contained true --output output/linux-arm/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm --self-contained true --output output/linux-arm/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm --self-contained true --output output/linux-arm/
 
     - name: Publish for linux-arm64
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm64 --self-contained true --output output/linux-arm64/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm64 --self-contained true --output output/linux-arm64/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm64 --self-contained true --output output/linux-arm64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm64 --self-contained true --output output/linux-arm64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm64 --self-contained true --output output/linux-arm64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm64 --self-contained true --output output/linux-arm64/
     
     - name: Publish for osx-x64
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-x64 --self-contained true --output output/osx-x64/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-x64 --self-contained true --output output/osx-x64/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-x64 --self-contained true --output output/osx-x64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-x64 --self-contained true --output output/osx-x64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-x64 --self-contained true --output output/osx-x64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-x64 --self-contained true --output output/osx-x64/
 
             
     - name: Publish for osx-arm64
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-arm64 --self-contained true --output output/osx-arm64/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-arm64 --self-contained true --output output/osx-arm64/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-arm64 --self-contained true --output output/osx-arm64/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-arm64 --self-contained true --output output/osx-arm64/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-arm64 --self-contained true --output output/osx-arm64/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-arm64 --self-contained true --output output/osx-arm64/
 
     - name: Remove .pdb files
       if: startsWith(github.ref, 'refs/tags/')
@@ -163,77 +163,77 @@ jobs:
     - name: Publish for win-x86-full
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-full/
 
     - name: Publish for win-x86-gui-full
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/;
-        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/;
+        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x86 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x86-gui-full/
 
     - name: Publish for win-x64-full
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-full/
 
     - name: Publish for win-x64-gui-full
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/;
-        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/;
+        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-x64-gui-full/
 
     - name: Publish for win-arm64-full
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-full/
 
     - name: Publish for win-arm64-gui-full
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/;
-        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/;
+        dotnet publish FileHasher.GUI.WinForms/FileHasher.GUI.WinForms.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime win-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/win-arm64-gui-full/
 
     - name: Publish for linux-x64-full
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-x64-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-x64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-x64-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-x64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-x64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-x64-full/
 
     - name: Publish for linux-arm-full
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm-full/
 
     - name: Publish for linux-arm64-full
       if: startsWith(github.ref, 'refs/tags/')
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm64-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime linux-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm64-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime linux-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/linux-arm64-full/
 
     - name: Publish for osx-x64-full
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-x64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-x64-full/
     
     - name: Publish for osx-arm64-full
       run: >
-        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
-        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
-        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/
+        dotnet publish FileHasher.CLI/FileHasher.CLI.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
+        dotnet publish FileHasher.CLI.Check/FileHasher.CLI.Check.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/;
+        dotnet publish FileHasher.CLI.Hash/FileHasher.CLI.Hash.csproj --configuration Release /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }} --runtime osx-arm64 --self-contained true -p:PublishTrimmed=false -p:IncludeAllContentForSelfExtract=false -p:IncludeNativeLibrariesForSelfExtract=false -p:PublishSingleFile=false --output output/osx-arm64-full/
 
     - uses: actions/upload-artifact@v4
       name: Upload artifacts for win-x86
