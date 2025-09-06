@@ -69,7 +69,7 @@ jobs:
       id: get_version
       run: |
         echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-        echo "FILE_VERSION=${GITHUB_REF#refs/tags/v}.${{ env.GIT_HASH_NUM }" >> $GITHUB_ENV
+        echo "FILE_VERSION=${GITHUB_REF#refs/tags/v}.${{ env.GIT_HASH_NUM }}" >> $GITHUB_ENV
         echo "Calculated version is: $VERSION"
         echo "Calculated file version is: $FILE_VERSION"
         
