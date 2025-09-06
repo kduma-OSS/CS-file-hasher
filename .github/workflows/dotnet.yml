@@ -86,7 +86,7 @@ jobs:
         remove_pdb_files: ${{ startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
         output_directory: ${{ matrix.runtime }}-gui
         full_build: false
-        gui: only
+        build_gui: only
 
     - name: Publish full executables with GUI
       uses: ./.github/actions/publish-executables-for-platform
@@ -95,7 +95,7 @@ jobs:
         remove_pdb_files: ${{ startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
         output_directory: ${{ matrix.runtime }}-gui-full
         full_build: true
-        gui: true
+        build_gui: true
   
   release:
     needs: build   
