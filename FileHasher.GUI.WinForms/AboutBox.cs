@@ -7,13 +7,13 @@ namespace FileHasher.GUI.WinForms
         public AboutBox()
         {
             InitializeComponent();
-            labelVersion.Text = $@"Version: {FileVersion} ({AssemblyVersion})";
+            labelVersion.Text = $@"Version: {Version} ({AssemblyVersion})";
         }
 
         #region Assembly Attribute Accessors
 
         private static string? AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version?.ToString();
-        private static string? FileVersion => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+        private static string? Version => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
         #endregion
     }
