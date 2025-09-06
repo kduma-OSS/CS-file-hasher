@@ -90,7 +90,7 @@ jobs:
       run: mkdir output
       
     - name: ls
-      run: ls -la hash
+      run: ls -la
 
     - name: Publish
       uses: ./.github/actions/publish-executables-for-platform
