@@ -1,13 +1,8 @@
-name: Checkout and prepare
-description: Checkout the repository and prepare the environment for building .NET projects.
+name: Prepare environment
+description: Prepare the environment for building .NET projects.
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        fetch-tags: true
-      
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:

@@ -19,7 +19,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: ./.github/actions/checkout-and-prepare
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+      
+    - uses: ./.github/actions/prepare
   
     - name: Build
       run: dotnet build --configuration Release --no-restore /p:EnableWindowsTargeting=true /p:Version=${{ env.VERSION }} /p:FileVersion=${{ env.FILE_VERSION }} /p:AssemblyVersion=${{ env.FILE_VERSION }}
@@ -45,10 +50,13 @@ jobs:
           - runtime: osx-x64
           - runtime: osx-arm64
   
-
-
     steps:
-    - uses: ./.github/actions/checkout-and-prepare
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+      
+    - uses: ./.github/actions/prepare
       
     - name: Prepare test directory
       run: mkdir output
