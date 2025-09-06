@@ -25,7 +25,7 @@ runs:
         BASE_TAG_STRIPPED=$(echo "$BASE_TAG" | sed 's/^v//')
         # Compose version string
         if [ -n "$BASE_TAG_STRIPPED" ]; then
-          VERSION="${BASE_TAG_STRIPPED}-next+build${{ env.GIT_REVISION_NUM }}"
+          VERSION="${BASE_TAG_STRIPPED}-next.${{ env.GIT_REVISION_NUM }}+${{ env.GIT_HASH }}"
           FILE_VERSION="${BASE_TAG_STRIPPED}.${{ env.GIT_REVISION_NUM }}"
         else
           VERSION="0.0.0-next+build${{ env.GIT_REVISION_NUM }}"
