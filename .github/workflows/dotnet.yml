@@ -88,6 +88,9 @@ jobs:
       
     - name: Prepare output directory
       run: mkdir output
+      
+    - name: ls
+      run: ls -la hash
 
     - name: Publish
       uses: ./.github/actions/publish-executables-for-platform
