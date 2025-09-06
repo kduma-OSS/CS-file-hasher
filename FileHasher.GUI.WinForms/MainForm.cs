@@ -87,9 +87,8 @@ namespace FileHasher.GUI.WinForms
             if (e.Data == null)
                 return;
 
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetData(DataFormats.FileDrop) is not string[] files) return;
             
-            if (e.Data.GetData(DataFormats.FileDrop) is not string[] files) return;
             
             foreach (var file in files)
             {
