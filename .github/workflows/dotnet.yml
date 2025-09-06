@@ -102,7 +102,7 @@ jobs:
       with:
         runtime: ${{ matrix.runtime }}
         remove_pdb_files: ${{ startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
-        output_directory: ${{ matrix.runtime }}${{ matrix.build_variant == 'self-contained' && '' || format('-{0}', matrix.build_variant) }}
+        output_directory: ${{ matrix.runtime }}${{ matrix.build_variant == 'self-contained' && '' || (matrix.build_variant != 'self-contained' && format('-{0}', matrix.build_variant)) }}
         full_build: ${{ matrix.build_variant == 'full' || matrix.build_variant == 'full-gui' && 'true' || 'false' }}
         build_gui: ${{ matrix.build_variant == 'gui' && 'only' || matrix.build_variant == 'full-gui' && 'true' || 'false' }}
   
